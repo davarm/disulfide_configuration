@@ -1,0 +1,5 @@
+Finding the frequncy of amino acids based on secondary structure features (i.e strand to strand, strand to helix etc).
+
+Will make a package of amino acid frequency, store each secondary structure information as a list.
+
+For each list call package and develop graph

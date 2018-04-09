@@ -1,0 +1,4 @@
+V,Q,N,E
+A,E,G,S
+V,A,N,E
+V,T,G,Q

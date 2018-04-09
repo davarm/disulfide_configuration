@@ -1,0 +1,15 @@
+L,V,V,F
+N,T,P,T
+c,c,E,H
+R,A,G,I
+N,E,I,S
+A,N,D,I
+T,I,I,N
+I,N,K,G
+P,S,G,D
+c,c,N,Y
+F,F,D,W
+S,D,R,Y
+N,N,L,D
+G,I,T,D
+N,V,L,A

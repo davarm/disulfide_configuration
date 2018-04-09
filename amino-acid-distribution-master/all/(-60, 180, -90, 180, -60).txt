@@ -1,0 +1,10 @@
+R,P,D,S
+P,H,G,V
+P,H,G,V
+P,H,G,Q
+R,Q,S,c
+A,T,D,K
+P,H,G,I
+P,H,G,P
+P,H,G,V
+V,E,T,G
