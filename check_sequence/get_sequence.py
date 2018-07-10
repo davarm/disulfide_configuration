@@ -20,12 +20,12 @@ for index,row in df.iterrows():
 	pdb = pdb.upper()
 	chain = row['chain1']
 
-	#print cys1
+	# print cys1
 	try:
 		cys1 = row['Cys1']
 		cys2 = row['Cys2']
 		sequence =  seq_dict[pdb+':'+chain]
-		print cys1,len(sequence), sequence[cys1-1]
+		print pdb,chain,cys1,len(sequence), sequence[cys1-1]
 		# print
 
 	except KeyError:
