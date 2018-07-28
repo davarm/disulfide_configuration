@@ -295,123 +295,107 @@ for config in configurations:
 from collections import Counter
 import itertools
 
+vdw_volume={}
+vdw_volume['A']=67
+vdw_volume['R']=148
+vdw_volume['N']=96
+vdw_volume['D']=91
+vdw_volume['C']=86
+vdw_volume['c']=86
+vdw_volume['Q']=114
+vdw_volume['E']=109
+vdw_volume['G']=48
+vdw_volume['H']=118
+vdw_volume['I']=124
+vdw_volume['L']=124
+vdw_volume['K']=135
+vdw_volume['M']=124
+vdw_volume['F']=135
+vdw_volume['P']=90
+vdw_volume['S']=73
+vdw_volume['T']=93
+vdw_volume['W']=163
+vdw_volume['Y']=141
+vdw_volume['V']=105
+vdw_volume['X']= 5
 
-secondary_structure = [
-'a-Helix',
-'B-Bridge',
-'Strand',
-'3-Helix',
-'5-Helix',
-'Turn',
-'Bend',
-'Coil']
+import os
+from bokeh.models import Jitter
+from bokeh.plotting import figure, show, output_file
+import math
+# from bokeh.charts.utils import cycle_colors
 
-ss_possible = itertools.combinations(secondary_structure,2)
-unique_ss = []
-for _ in ss_possible:
-   if  _[::-1] not in unique_ss:
-        unique_ss.append(_)
-from collections import OrderedDict
+#MATPLOTLIB
+def generate_ss_bar_graph(cys1_b_vdw,cys1_a_vdw):
+    fig,ax = plt.subplots()
+    i=0
+    x_axis_labels = []
+    new_axis = []
+    for key in cys1_b_vdw:
+        b_vdw_mean = np.mean(cys1_b_vdw[key])
+        b_vdw_std  = np.std(cys1_b_vdw[key])
+        a_vdw_mean = np.mean(cys1_a_vdw[key])
+        a_vdw_std  = np.std(cys1_a_vdw[key])
+        x_axis_labels.append(key)
+        new_axis.append(key)
+        x_axis_labels.append('')
 
-unique_ss.append(('a-Helix','a-Helix'))
-unique_ss.append(('B-Bridge','B-Bridge'))
-unique_ss.append(('Strand','Strand'))
-unique_ss.append(('3-Helix','3-Helix'))
-unique_ss.append(('5-Helix','5-Helix'))
-unique_ss.append(('Turn','Turn'))
-unique_ss.append(('Bend','Bend'))
-unique_ss.append(('Coil','Coil'))
+        ax.errorbar(i-0.2, b_vdw_mean, yerr=b_vdw_std, fmt='o', color = 'green', capsize=3, ms =5)
+        ax.errorbar(i+0.2, a_vdw_mean, yerr=a_vdw_std, fmt='o', color = 'black',capsize=3, ms =5)
 
-def generate_ss_bar_graph(total_dict,config_total,ss):
-  #y_pos = np.arange(len(ss_x_axis_top3))
-    ss_title = str(ss).replace(')','')
-    ss_title = ss_title.replace('(','')
+        #for _ in distance_dict[key]:
+        #    plt.scatter(i, _,color = 'blue')
+        i = i+2
+    
+    plt.ylim(0,180)
+    # xticks_pos = [x for x in range(0,len(x_axis_labels))]
+    xticks_pos = (np.arange(0, len(x_axis_labels), step=2))
+    print xticks_pos
 
-    fig, ax = plt.subplots()
-    i= 0
-    config_ticks = []
-    for key in total_dict:
-        config = str(key).replace(')','')
-        config = config.replace('(','')
-        config_ticks.append(config)
-        plt.bar(i, float(total_dict[key])/float(config_total),color = 'blue')
-        i =i+1
-    plt.ylim(0,1.23)
-    xticks_pos = [i for i in range(0,len(config_ticks))]
-    #for key in frequency_dict:
-    #    plt.bar(ss_x_axis_top3.index(key[0]),(float(key[1])/(float(config_total))), color = 'blue')
-    #
     ax.set_xticks(xticks_pos)
-    ax.set_xticklabels(config_ticks,rotation=90)
-    #plt.ylim(0,1)
-    plt.title(ss_title)
-    plt.ylabel("Frequency")
-    plt.xlabel('Configuration')
-    plt.savefig(str(ss)+'.png', dpi=300, bbox_inches='tight')
-    #plt.show()
+    ax.set_xticklabels(new_axis,rotation=90)
+    plt.ylabel("VdW radius")
+    plt.xlabel("Configuration")
+    plt.title("Cys2")
+    plt.savefig('Cys2_vdw_radi.png', dpi=300, bbox_inches='tight')
+    plt.show()
 
-    plt.close()
+
     return()
 
-print unique_ss
-print ss_possible
+distance_dict = {}  
+config_list = [] 
+cys1_b_vdw = {}
+cys1_a_vdw = {}
+cys2_b_vdw = {}
+cys2_a_vdw = {}
+def vdw_radi(aa):
+    vdw_radi_v = vdw_volume[aa]
+    return[vdw_radi_v]
 
-for ss in unique_ss:
-    complete_total = 0
-    ss_forward         = ss[0]+','+ss[1]
-    ss_reverse = ss[1]+','+ss[0]
-    #print ss_forward
-    total_dict ={}
-    for config in configurations:
-        # print config
-        config_dataframe = configuration_dataframe_return(config)
-        ss_list = config_dataframe[['Cys1_SS_cat','Cys2_SS_cat']]
-        ss_list['combined'] = ss_list[['Cys1_SS_cat','Cys2_SS_cat']].apply(lambda x: ','.join(x), axis=1)
-        # print ss_list
-        if len(ss_list) > 100:
-            #print 'YES'
-            total = ss_list['combined'].tolist().count(ss_forward) +ss_list['combined'].tolist().count(ss_reverse)
-            complete_total = complete_total+total
-            total_dict[config] = total
-            #print config,ss_forward, (float(total)/float(len(ss_list))*100)
-            # print config,ss_forward, float(total)/flen(ss)
-    total_dict=collections.OrderedDict(sorted(total_dict.items()))
-    if complete_total != 0:
-       generate_ss_bar_graph(total_dict,complete_total,ss)
-
-#fig, ax = plt.subplots()
-#image = np.random.uniform(size=(10, 10))
-#
-#fig.subplots_adjust(hspace=0.3, wspace=0.05)
-
-#def generate_ss_bar_graph(frequency_dict,config_total,config):
-#  #y_pos = np.arange(len(ss_x_axis_top3))
-#    #plt.xticks(y_pos,ss_x_axis, rotation = 90)
+for config in configurations:
+    config_dataframe = configuration_dataframe_return(config)
+    # config_dataframe = config_dataframe.loc[config_dataframe['chain1'] == config_dataframe['chain2']]
+#    # Test if dictionary works first
+#    config_dataframe = configuration_dataframe_dict[config]
+#    Cys1 b res
 #    
-#    i= 0
-#    for key in frequency_dict:
-#        plt.bar(i,(float(key[1])/(float(config_total))))
-#        i =i+1
-#    #for key in frequency_dict:
-#    #    plt.bar(ss_x_axis_top3.index(key[0]),(float(key[1])/(float(config_total))), color = 'blue')
-#    #plt.xticks(y_pos,ss_x_axis_top3, rotation = 90)
-#    #plt.ylim(0,1)
-#    plt.title(config)
-#    plt.ylabel("Frequency")
-#    plt.xlabel('Cys1-Cys2 Secondary Structure')
-#    plt.show()
-
- 
+    config_dataframe['Cys1 b res vdw'] = config_dataframe['Cys1 b res'].apply(vdw_radi)
+    config_dataframe['Cys2 b res vdw'] = config_dataframe['Cys2 b res'].apply(vdw_radi)
+    config_dataframe['Cys1 a res vdw'] = config_dataframe['Cys1 a res'].apply(vdw_radi)
+    config_dataframe['Cys2 a res vdw'] = config_dataframe['Cys2 a res'].apply(vdw_radi)
 
 
 
-
-  #config_dataframe = configuration_dataframe_return(config)
-  #ss_list = config_dataframe[['Cys1_SS_cat','Cys2_SS_cat']]
-  #ss_list['combined'] = ss_list[['Cys1_SS_cat','Cys2_SS_cat']].apply(lambda x: ','.join(x), axis=1)
-  #if len(ss_list) > 3000:
-  #    common_ss = Counter(ss_list['combined'].tolist())
-  #    print common_ss
-# #          common_ss = common_ss.most_common(3)
-# #          generate_ss_bar_graph(common_ss, len(ss_list),config)
+    if len(config_dataframe) > 100: 
+            config_list.append(str(config))
+            cys1_b_vdw[config] = config_dataframe['Cys1 b res vdw'].tolist()
+            cys1_a_vdw[config] = config_dataframe['Cys1 a res vdw'].tolist()
+            cys2_b_vdw[config] = config_dataframe['Cys2 b res vdw'].tolist()
+            cys2_a_vdw[config] = config_dataframe['Cys2 a res vdw'].tolist()
+            #print config_dataframe
+#config_list = ['1','2''1','2''1','2''1','2''1','2''1','2''1','2''1','2''1','2']
+generate_ss_bar_graph(cys2_b_vdw,cys2_a_vdw)
+# print distance_dict
+#            
 ##            #
