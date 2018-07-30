@@ -373,7 +373,7 @@ for config in configurations:
 #    
     ss_list = config_dataframe[['Cys1_SS_cat','Cys2_SS_cat']]
     ss_list['combined'] = ss_list[['Cys1_SS_cat','Cys2_SS_cat']].apply(lambda x: ','.join(x), axis=1)
-    if len(ss_list) > 100:
+    if len(ss_list) > 50:
             common_ss = Counter(ss_list['combined'].tolist())
             #for key in common_ss:
             #    print common_ss[key]

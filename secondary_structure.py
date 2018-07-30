@@ -376,9 +376,10 @@ for ss in unique_ss:
             #print config,ss_forward, (float(total)/float(len(ss_list))*100)
             # print config,ss_forward, float(total)/flen(ss)
     total_dict=collections.OrderedDict(sorted(total_dict.items()))
-    print ss,complete_total
-    if complete_total >= 75:
-       generate_ss_bar_graph(total_dict,complete_total,ss)
+    # print ss,complete_total
+    if complete_total < 10:
+       print ss
+       #generate_ss_bar_graph(total_dict,complete_total,ss)
 
 #fig, ax = plt.subplots()
 #image = np.random.uniform(size=(10, 10))

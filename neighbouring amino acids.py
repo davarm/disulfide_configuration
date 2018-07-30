@@ -349,26 +349,30 @@ def amino_heatmaps(amino_array,amino_array_cys2,config):
         
         
         im = fig.pcolor(amino_array, cmap='nipy_spectral', edgecolor='black', linestyle=':', lw=1)
-        im.set_clim(vmin=0,vmax =0.50)
-        plt.title(config)
-        plt.colorbar(im, orientation ='horizontal')
+        im.set_clim(vmin=0,vmax =1)
+        plt.ylabel("Cys1(i-1)")
+        plt.xlabel("Cys1(i+1)")
+        plt.title("Cys1 "+str(config))
+        #plt.colorbar(im, orientation ='horizontal')
         for axis in [fig.xaxis, fig.yaxis]:
             axis.set(ticks=np.arange(0.5, len(group_list)), ticklabels=group_list)
-        plt.savefig(str(config)+'cys1_amino_properties.png')
+        plt.savefig(str(config)+'cys1_amino_properties.png', dpi=300, bbox_inches='tight')
         #plt.figure(figsize=(18, 8)) 
         
 
         fig = plt.subplot(1,1,1)
         im = fig.pcolor(amino_array_cys2, cmap='nipy_spectral', edgecolor='black', linestyle=':', lw=1)
-        im.set_clim(vmin=0,vmax =0.50)
+        im.set_clim(vmin=0,vmax =0.5)
         # plt.colorbar(im)
         
         print config
         
         for axis in [fig.xaxis, fig.yaxis]:
             axis.set(ticks=np.arange(0.5, len(group_list)), ticklabels=group_list)
-        plt.title(config)
-        plt.savefig(str(config)+'cys2_amino_properties.png')
+        plt.ylabel("Cys2(i-1)")
+        plt.xlabel("Cys2(i+1)")
+        plt.title("Cys2 "+str(config))
+        plt.savefig(str(config)+'cys2_amino_properties.png', dpi=300, bbox_inches='tight')
         #plt.show()
         return()
 #
@@ -376,7 +380,7 @@ def amino_heatmaps(amino_array,amino_array_cys2,config):
 
 def search_config(config):   
     config_dataframe = configuration_dataframe_return(config)
-    if len(config_dataframe)> 3000 :
+    if len(config_dataframe)> 100 :
         amino_array = np.zeros(shape=(8,8))
         amino_array_cys2 = np.zeros(shape=(8,8))
         for index,row in config_dataframe.iterrows():
