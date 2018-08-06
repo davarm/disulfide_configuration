@@ -288,114 +288,104 @@ for config in configurations:
     configuration_dataframe_dict[config] = configuration_dataframe_return(config)
 
 
-#################################################################################
-# TAKE SECONDARY STRUCTURE:::::
-#################################################################################
-
-from collections import Counter
-import itertools
-
-vdw_volume={}
-vdw_volume['A']=67
-vdw_volume['R']=148
-vdw_volume['N']=96
-vdw_volume['D']=91
-vdw_volume['C']=86
-vdw_volume['c']=86
-vdw_volume['Q']=114
-vdw_volume['E']=109
-vdw_volume['G']=48
-vdw_volume['H']=118
-vdw_volume['I']=124
-vdw_volume['L']=124
-vdw_volume['K']=135
-vdw_volume['M']=124
-vdw_volume['F']=135
-vdw_volume['P']=90
-vdw_volume['S']=73
-vdw_volume['T']=93
-vdw_volume['W']=163
-vdw_volume['Y']=141
-vdw_volume['V']=105
-vdw_volume['X']= 5
-
-import os
-from bokeh.models import Jitter
-from bokeh.plotting import figure, show, output_file
-import math
-# from bokeh.charts.utils import cycle_colors
-
-#MATPLOTLIB
-def generate_ss_bar_graph(cys1_b_vdw,cys1_a_vdw):
-    fig,ax = plt.subplots()
-    i=0
-    x_axis_labels = []
-    new_axis = []
-    for key in cys1_b_vdw:
-        b_vdw_mean = np.mean(cys1_b_vdw[key])
-        b_vdw_std  = np.std(cys1_b_vdw[key])
-        a_vdw_mean = np.mean(cys1_a_vdw[key])
-        a_vdw_std  = np.std(cys1_a_vdw[key])
-        x_axis_labels.append(key)
-        new_axis.append(key)
-        x_axis_labels.append('')
-
-        ax.errorbar(i-0.2, b_vdw_mean, yerr=b_vdw_std, fmt='o', color = 'green', capsize=3, ms =5)
-        ax.errorbar(i+0.2, a_vdw_mean, yerr=a_vdw_std, fmt='o', color = 'black',capsize=3, ms =5)
-
-        #for _ in distance_dict[key]:
-        #    plt.scatter(i, _,color = 'blue')
-        i = i+2
-    
-    plt.ylim(0,180)
-    # xticks_pos = [x for x in range(0,len(x_axis_labels))]
-    xticks_pos = (np.arange(0, len(x_axis_labels), step=2))
-    print xticks_pos
-
-    ax.set_xticks(xticks_pos)
-    ax.set_xticklabels(new_axis,rotation=90)
-    plt.ylabel("VdW radius")
-    plt.xlabel("Configuration")
-    plt.title("Cys2")
-    plt.savefig('Cys2_vdw_radi.png', dpi=300, bbox_inches='tight')
-    plt.show()
+from matplotlib.pyplot import cm
+import matplotlib as mpl
+# mpl.rcParams['figure.figsize'] = (20.0, 10.0)
 
 
+aminos     = ['A','R','N','D','C','E','Q','G','H','I','L','K','M','F','P','S','T','W','Y','V','X']
+amino_dict = {}
+
+######################################
+#--------------------------------------
+# Assigning amino acid a number (1 to 21)
+#--------------------------------------
+#######################################
+"""Assigning amino acid a number (1 to 20)"""
+for k,value in enumerate(aminos):
+    amino_dict[value]=k
+
+######################################
+#--------------------------------------
+# Funciton to generate heatmpaps
+#--------------------------------------
+#######################################
+aminos     = ['A','R','N','D','C','E','Q','G','H','I','L','K','M','F','P','S','T','W','Y','V','X']
+amino_dict = {}
+
+######################################
+#--------------------------------------
+# Assigning amino acid a number (1 to 21)
+#--------------------------------------
+#######################################
+"""Assigning amino acid a number (1 to 20)"""
+for k,value in enumerate(aminos):
+    amino_dict[value]=k
+
+######################################
+#--------------------------------------
+# Funciton to generate heatmpaps
+#--------------------------------------
+#######################################
+def amino_heatmaps(amino_array,amino_array_cys2,config):        
+        amino_array=amino_array/np.sum(amino_array)
+        amino_array_cys2=amino_array_cys2/np.sum(amino_array_cys2)
+        
+
+        fig = plt.subplot(121)
+        for axis in [fig.xaxis, fig.yaxis]:
+            axis.set(ticks=np.arange(0, len(aminos)), ticklabels=aminos)
+        
+        #plt.imshow(np.random.random((100, 100)), cmap=plt.cm.BuPu_r)
+
+        # im = fig.pcolor(amino_array, cmap=plt.cm.BuPu_r, edgecolor='black', linestyle=':', lw=1)
+        # im.set_clim(vmin=0,vmax =1)
+        plt.imshow(amino_array, cmap=plt.cm.nipy_spectral)#, edgecolor='black', linestyle=':', lw=1)
+        plt.ylabel("Cys1(i-1)")
+        plt.xlabel("Cys1(i+1)")
+        plt.title("Cys1 "+str(config))
+
+
+        fig = plt.subplot(122)
+        for axis in [fig.xaxis, fig.yaxis]:
+            axis.set(ticks=np.arange(0.5, len(aminos)), ticklabels=aminos)
+
+
+        #im = fig.pcolor(amino_array_cys2, cmap=plt.cm.BuPu_r, edgecolor='black', linestyle=':', lw=1)
+        #im.set_clim(vmin=0,vmax =0.5)
+        plt.imshow(amino_array_cys2, cmap=plt.cm.nipy_spectral)#, edgecolor='black', linestyle=':', lw=1)
+        #plt.colorbar(im)
+        
+        print config
+        
+        for axis in [fig.xaxis, fig.yaxis]:
+            axis.set(ticks=np.arange(0, len(aminos)), ticklabels=aminos)
+        plt.ylabel("Cys2(i-1)")
+        plt.xlabel("Cys2(i+1)")
+        plt.title("Cys2 "+str(config))
+
+        plt.subplots_adjust(bottom=0.1, right=0.8, top=1)
+        cax = plt.axes([0.85, 0.25, 0.025, 0.6])
+        cbar = plt.colorbar(cax=cax)#,set_clim(vmin=0,vmax =0.5))
+        cbar.set_clim(vmin=0,vmax =0.5)
+        #plt.savefig(str(config)+'cys2_amino_properties.png', dpi=300, bbox_inches='tight')
+        plt.show()
+        return()
+
+def search_config(config):   
+    config_dataframe = configuration_dataframe_return(config)
+    if len(config_dataframe)> 500 :
+        amino_array = np.zeros(shape=(22,22))
+        amino_array_cys2 = np.zeros(shape=(22,22))
+        for index,row in config_dataframe.iterrows():
+            cys1_b = row['Cys1 b res']
+            cys1_a = row['Cys1 a res']
+            cys2_b = row['Cys2 b res']
+            cys2_a = row['Cys2 a res']
+            amino_array[amino_dict[cys1_b],amino_dict[cys1_a]] = amino_array[amino_dict[cys1_b],amino_dict[cys1_a]]+1
+            amino_array_cys2[amino_dict[cys2_b],amino_dict[cys2_a]] = amino_array_cys2[amino_dict[cys2_b],amino_dict[cys2_a]]+1
+        amino_heatmaps(amino_array,amino_array_cys2,config)
     return()
 
-distance_dict = {}  
-config_list = [] 
-cys1_b_vdw = {}
-cys1_a_vdw = {}
-cys2_b_vdw = {}
-cys2_a_vdw = {}
-def vdw_radi(aa):
-    vdw_radi_v = vdw_volume[aa]
-    return[vdw_radi_v]
-
 for config in configurations:
-    config_dataframe = configuration_dataframe_return(config)
-    # config_dataframe = config_dataframe.loc[config_dataframe['chain1'] == config_dataframe['chain2']]
-#    # Test if dictionary works first
-#    config_dataframe = configuration_dataframe_dict[config]
-#    Cys1 b res
-#    
-    config_dataframe['Cys1 b res vdw'] = config_dataframe['Cys1 b res'].apply(vdw_radi)
-    config_dataframe['Cys2 b res vdw'] = config_dataframe['Cys2 b res'].apply(vdw_radi)
-    config_dataframe['Cys1 a res vdw'] = config_dataframe['Cys1 a res'].apply(vdw_radi)
-    config_dataframe['Cys2 a res vdw'] = config_dataframe['Cys2 a res'].apply(vdw_radi)
-
-
-
-    if len(config_dataframe) > 100: 
-            config_list.append(str(config))
-            cys1_b_vdw[config] = config_dataframe['Cys1 b res vdw'].tolist()
-            cys1_a_vdw[config] = config_dataframe['Cys1 a res vdw'].tolist()
-            cys2_b_vdw[config] = config_dataframe['Cys2 b res vdw'].tolist()
-            cys2_a_vdw[config] = config_dataframe['Cys2 a res vdw'].tolist()
-            #print config_dataframe
-#config_list = ['1','2''1','2''1','2''1','2''1','2''1','2''1','2''1','2''1','2']
-generate_ss_bar_graph(cys2_b_vdw,cys2_a_vdw)
-# print distance_dict
-#            
-##            #
+    search_config(config)  

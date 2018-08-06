@@ -329,17 +329,19 @@ import math
 #    plt.show()
 
 # BOKEH
-colors=['Black','Red','Lime','Blue','Yellow','Cyan','Magenta','Silver','Gray','Maroon','Olive','Green','Purple','Teal','Navy','Red','Lime','Blue','Yellow','Cyan','Magenta','Silver','Gray','Maroon','Olive','Green','Purple','Teal','Navy']
+colors=['Black','Red','Lime','Blue','Yellow','Cyan','Magenta','Silver','Gray','Maroon','Green','Purple','Teal','Navy','Red','Lime','Blue','Yellow','Cyan','Magenta','Silver','Gray','Maroon','Olive','Green','Purple','Teal','Navy']
 def generate_cys_dist(distance_dict,config_list):
-    p = figure(plot_width=1000, plot_height=1000, x_range=config_list, y_range=(0,1))
+    p = figure(plot_width=1000, plot_height=1000, x_range=config_list_title, y_range=(0,1))
     i = 0
-    print i
-    for key in distance_dict:
+    #print i
+    # for key in distance_dict:
+    for key in config_list:
+        print key,colors[i]
         y1=distance_dict[key]
         p.circle(x={'value': i+0.5, 'transform': Jitter(width=0.3)}, y=y1,
          color=colors[i], alpha=0.1,size=5)
         i = i+1
-    p.yaxis.axis_label = "Difference between Cys residues"
+    p.yaxis.axis_label = "(Cys1 - Cys2) / Sequence Length"
     p.xaxis.axis_label = "Configuration"
     p.xaxis.major_label_text_font_size='12pt'
     p.xaxis.major_label_orientation = math.pi/2
@@ -354,6 +356,7 @@ def generate_cys_dist(distance_dict,config_list):
 
 distance_dict = {}  
 config_list = [] 
+config_list_title = [] 
 for config in configurations:
     config_dataframe = configuration_dataframe_return(config)
     config_dataframe = config_dataframe.loc[config_dataframe['chain1'] == config_dataframe['chain2']]
@@ -367,7 +370,8 @@ for config in configurations:
 
     config_dataframe['cys_diff'] = config_dataframe['cys_diff']/config_dataframe['seqlength']
     if len(config_dataframe) > 100: 
-            config_list.append(str(config))
+            config_list.append(config)
+            config_list_title.append(str(config))
             #print config_dataframe
             distance_dict[config] = config_dataframe['cys_diff'].tolist()
 #config_list = ['1','2''1','2''1','2''1','2''1','2''1','2''1','2''1','2''1','2']
