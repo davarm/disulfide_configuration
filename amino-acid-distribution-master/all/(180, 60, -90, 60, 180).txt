@@ -1,4 +1,0 @@
-T,P,L,V
-A,M,V,D
-G,M,V,N
-F,T,H,G

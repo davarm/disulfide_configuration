@@ -1,5 +1,0 @@
-D,A,A,A
-D,G,F,W
-Y,D,F,L
-N,T,R,S
-V,N,P,I

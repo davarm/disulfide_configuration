@@ -1,8 +1,0 @@
-I,T,c,Y
-F,H,S,H
-I,G,c,K
-P,G,F,I
-P,R,c,K
-E,A,Y,P
-A,S,D,W
-V,D,F,V

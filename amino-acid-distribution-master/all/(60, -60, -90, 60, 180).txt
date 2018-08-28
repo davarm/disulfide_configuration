@@ -1,9 +1,0 @@
-G,D,G,S
-G,S,D,G
-S,Q,F,A
-G,T,N,I
-S,L,V,F
-S,L,V,F
-T,N,I,G
-G,Q,A,E
-T,R,I,G

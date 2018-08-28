@@ -1,8 +1,0 @@
-M,W,K,N
-A,A,G,P
-T,I,M,T
-N,E,F,D
-E,I,I,I
-M,W,Q,T
-Y,L,L,R
-T,I,G,M

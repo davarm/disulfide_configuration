@@ -1,6 +1,0 @@
-A,P,L,L
-A,K,S,R
-A,P,T,T
-G,G,R,Y
-S,D,G,A
-G,E,P,R
